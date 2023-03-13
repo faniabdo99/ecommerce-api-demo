@@ -12,5 +12,6 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    // This method is only used to ensure that the systems are up
+    return response(['response' => 'Hello world!'], 200);
 });
