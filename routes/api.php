@@ -20,5 +20,6 @@ Route::group([
 ], function(){
     Route::prefix('auth')->group(function(){
         Route::post('signup', 'AuthController@postSignup')->name('auth.signup');
+        Route::post('login', 'AuthController@postLogin')->name('auth.login');
     });
 });
