@@ -58,4 +58,18 @@ class CartController extends Controller {
         return $this->api_response($CartItem, true, 201);
     }
 
+    public function delete(Request $r){
+        // TODO: Handle qty while deleting the product
+        if(!$r->has('cart_item_id')){
+            return $this->api_response('You have to provide a cart item id', false, 422);
+        }
+        $CartItem = CartItem::find($r->cart_item_id);
+        if($CartItem->user_id != auth()->user()->id){
+            return $this->api_response('Your are not allowed to delete this record!', false, 403);
+        }
+        $CartItem->update([
+            'status' => 'deleted'
+        ]);
+    }
+
 }

@@ -36,12 +36,14 @@ Route::group([
            Route::post('/', 'ProductController@postNew')->name('product.postNew');
            Route::post('/{product}', 'ProductController@postEdit')->name('product.postEdit');
            Route::delete('/{product}', 'ProductController@delete')->name('product.delete');
+           Route::post('/localize/{product}', 'ProductController@postLocalize')->name('product.localize');
        });
 
         // api/v1/cart/{route}
         Route::prefix('cart')->group(function(){
             Route::get('/', 'CartController@getAll')->name('cart.getAll');
             Route::post('add', 'CartController@postNew')->name('cart.postNew');
+            Route::post('delete', 'CartController@delete')->name('cart.delete');
         });
     });
 });

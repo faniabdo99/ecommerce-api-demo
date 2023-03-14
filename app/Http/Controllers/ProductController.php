@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ProductLocale;
 use Illuminate\Http\Request;
 
 use App\Product;
@@ -22,6 +23,10 @@ class ProductController extends Controller {
             case 'update':
                 $Rules['vat_type'] = Rule::in(['percentage', 'fixed']);
                 $Rules['vat'] = 'required_with:vat_type';
+                break;
+            case 'localize':
+                $Rules['title'] = 'required';
+                $Rules['description'] = 'required';
                 break;
             default:
                 $Rules['title'] = 'required';
@@ -98,5 +103,23 @@ class ProductController extends Controller {
         }
         $Product->delete();
         return $this->api_response('Product deleted successfully', true, 200);
+    }
+
+    public function postLocalize(Request $r, Product $Product){
+        $Validator = $this->validateRequest($r->all(), 'localize');
+        if($Validator->fails()){
+            return $this->api_response($Validator->errors(), false, 422);
+        }
+        // Ensure the user is allowed to localize the product
+        if($Product->user_id != auth()->user()->id){
+            return $this->api_response('You are not allowed to change the translation on this product', false, 403);
+        }
+        // Create or Update the localization record
+        ProductLocale::updateOrCreate(['product_id' => $Product->id], [
+           'title_value' => $r->title,
+           'description_value' => $r->description,
+           'product_id' => $Product->id
+        ]);
+        return $this->api_response('The product has been translated to Arabic!', true, 201);
     }
 }
