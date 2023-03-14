@@ -10,7 +10,13 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class ProductController extends Controller {
-    private function validateRequest($r, $method){
+    /**
+     * @param (Request) $r
+     * @param (string) $method
+     * @description A validation helper to avoid repeating the same logic in each method below
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    private function validateRequest(Request $r, string $method): \Illuminate\Contracts\Validation\Validator {
         $Rules = [];
         switch ($method){
             case 'create':
@@ -37,7 +43,14 @@ class ProductController extends Controller {
         }
         return Validator::make($r, $Rules);
     }
-    private function calculateVatPercentage($r, $ProductData){
+
+    /**
+     * @param (Request) $r
+     * @param (array) $ProductData
+     * @description Calculates the VAT percentage field based on the user input
+     * @return array
+     */
+    private function calculateVatPercentage(Request $r, array $ProductData): array {
         // Calculate the vat_percentage field
         if($r->has('vat_type') && $r->has('vat_percentage')){
             $ProductData['is_vat_included'] = true;
@@ -54,15 +67,35 @@ class ProductController extends Controller {
         return $ProductData;
     }
 
+    /**
+     * @description Return all the user's products utlizing the mine scope defined in the model
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @usages GET /api/v1/product
+     */
     public function getAll(){
         return $this->api_response(Product::mine()->get(), true, 200);
     }
+
+    /**
+     * @param Product $Product
+     * @description Return a single product
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @usages GET /api/v1/product/{id}
+     */
     public function getSingle(Product $Product){
+        // Ensure the product is owned by the current user
         if(auth()->user()->id != $Product->user_id){
             return $this->api_response('You are not allowed to view this product', false, 403);
         }
         return $this->api_response($Product, true, 200);
     }
+
+    /**
+     * @param Request $r
+     * @description Create a new product
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @usages POST /api/v1/product
+     */
     public function postNew(Request $r){
         // Validate the request
         $Validator = $this->validateRequest($r->all(), 'create');
@@ -79,6 +112,13 @@ class ProductController extends Controller {
         return $this->api_response($Product, true, 201);
     }
 
+    /**
+     * @param Request $r
+     * @param Product $Product
+     * @description Update a single product
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @usages POST /api/v1/product/{id}
+     */
     public function postEdit(Request $r, Product $Product){
         // Check if the user is allowed to edit this product
         if(auth()->user()->id != $Product->user_id){
@@ -96,6 +136,12 @@ class ProductController extends Controller {
         return $this->api_response($Product, true, 200);
     }
 
+    /**
+     * @param Product $Product
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @description Delete a product
+     * @usages DELETE /api/v1/product/{id}
+     */
     public function delete(Product $Product){
         // Check if the user is allowed to delete this product
         if(auth()->user()->id != $Product->user_id){
@@ -104,6 +150,14 @@ class ProductController extends Controller {
         $Product->delete();
         return $this->api_response('Product deleted successfully', true, 200);
     }
+
+    /**
+     * @param Request $r
+     * @param Product $Product
+     * @description Update or Create the translated data for a product
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @usages POST /api/v1/product/localize/{id}
+     */
 
     public function postLocalize(Request $r, Product $Product){
         $Validator = $this->validateRequest($r->all(), 'localize');

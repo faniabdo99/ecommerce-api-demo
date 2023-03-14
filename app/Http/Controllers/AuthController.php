@@ -6,10 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 // Models
 use App\User;
-use Illuminate\Support\Str;
 
 class AuthController extends Controller{
     /**
@@ -43,6 +43,7 @@ class AuthController extends Controller{
      * @param Request $r
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      * @description Log a user in by comparing the incoming data with our database and return an authentication token
+     * @usages POST /api/v1/auth/login
      */
     public function postLogin(Request $r){
         // Validate the request

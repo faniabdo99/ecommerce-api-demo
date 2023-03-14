@@ -8,11 +8,20 @@ use App\Store;
 use Illuminate\Http\Request;
 
 class CartController extends Controller {
+
+    /**
+     * @description Returns a list of the cart items for the user
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @usages GET /api/v1/cart
+     */
     public function getAll(){
+        // Get a list of the active cart items for the current user
         $CartItems = CartItem::active()->where('user_id', auth()->user()->id)->get();
+        // Generate the cart subtotal
         $CartSubTotal = $CartItems->sum(function($Item){
             return $Item->qty * $Item->Product->item_price;
         });
+        // Generate the VAT total
         $VatTotal = $CartItems->sum(function($Item){
             return $Item->qty * $Item->Product->vat_value;
         });
@@ -31,6 +40,13 @@ class CartController extends Controller {
             'items' => $CartItems
         ], true, 200);
     }
+
+    /**
+     * @param Request $r
+     * @description Add a new item to the cart
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @usages POST /api/v1/cart/add
+     */
     public function postNew(Request $r){
         // Ensure there is a product_id in the request
         if(!$r->has('product_id')){
@@ -58,15 +74,27 @@ class CartController extends Controller {
         return $this->api_response($CartItem, true, 201);
     }
 
+    /**
+     * @param Request $r
+     * @description Delete a cart item
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response|void
+     */
     public function delete(Request $r){
         // TODO: Handle qty while deleting the product
+        // Ensure there is a cart_item_id in the request
         if(!$r->has('cart_item_id')){
             return $this->api_response('You have to provide a cart item id', false, 422);
         }
         $CartItem = CartItem::find($r->cart_item_id);
+        // Ensure the cart item exists
+        if(!$CartItem){
+            return $this->api_response('There is no such cart item', false, 404);
+        }
+        // Ensure the cart_item_id actually belongs to the user
         if($CartItem->user_id != auth()->user()->id){
             return $this->api_response('Your are not allowed to delete this record!', false, 403);
         }
+        // We don't delete the record, the deleted carts can be a valuable information for the marketing team to detect patterns & identify any issues (Abandoned Carts)
         $CartItem->update([
             'status' => 'deleted'
         ]);

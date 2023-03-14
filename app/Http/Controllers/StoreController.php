@@ -7,12 +7,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 class StoreController extends Controller{
 
+    /**
+     * @param Request $r
+     * @description Create a new store for the user
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @usages POST /api/v1/store/create
+     */
     public function postNew(Request $r){
         // Ensure the user doesn't have other stores
         if(auth()->user()->hasStore()){
             return $this->api_response('You already have a store!', false, 406);
         }
-        // There is no validation in this method, as the store title is not required
         $Rules = [
             'vat_percentage' => 'required|integer',
             'shipping' => 'required|integer'
@@ -22,6 +27,7 @@ class StoreController extends Controller{
             return $this->api_response($Validator->errors(), false, 422);
         }
         $StoreData = $r->all();
+        // Generate an automated title unless the user did supply a title (Defaults to USER_NAME's Store)
         $StoreData['title'] = ($r->has('title')) ? $r->title : auth()->user()->name ."'s Store";
         $StoreData['user_id'] = auth()->user()->id;
         // Create the store
