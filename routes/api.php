@@ -37,5 +37,11 @@ Route::group([
            Route::post('/{product}', 'ProductController@postEdit')->name('product.postEdit');
            Route::delete('/{product}', 'ProductController@delete')->name('product.delete');
        });
+
+        // api/v1/cart/{route}
+        Route::prefix('cart')->group(function(){
+            Route::get('/', 'CartController@getAll')->name('cart.getAll');
+            Route::post('add', 'CartController@postNew')->name('cart.postNew');
+        });
     });
 });

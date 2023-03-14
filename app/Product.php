@@ -16,7 +16,21 @@ class Product extends Model{
     public function scopeMine($query){
         return $query->where('user_id', auth()->user()->id);
     }
-    public function scopeMyStore($query){
-        return $query->where('store_id', auth()->user()->Store->id);
+
+    public function getVatValueAttribute(){
+        return round($this->price * ($this->vat_percentage / 100));
     }
+    public function getItemPriceAttribute(){
+        // If VAT Included, basically do nothing
+        if($this->is_vat_included){
+            return round($this->price - $this->vat_value);
+        }else{
+            return $this->price;
+        }
+    }
+    public function getTotalPriceAttribute(){
+        return round($this->item_price + $this->vat_value);
+    }
+
+
 }

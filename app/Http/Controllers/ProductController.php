@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Product;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller {
     private function validateRequest($r, $method){
@@ -15,17 +16,37 @@ class ProductController extends Controller {
                 $Rules['title'] = 'required';
                 $Rules['description'] = 'required';
                 $Rules['price'] = 'required|integer';
-                $Rules['shipping'] = 'required|integer';
+                $Rules['vat_type'] = ['required_with:vat_percentage', Rule::in(['percentage', 'fixed'])];
+                $Rules['vat_percentage'] = 'required_with:vat_type';
                 break;
             case 'update':
+                $Rules['vat_type'] = Rule::in(['percentage', 'fixed']);
+                $Rules['vat'] = 'required_with:vat_type';
                 break;
             default:
                 $Rules['title'] = 'required';
                 $Rules['description'] = 'required';
                 $Rules['price'] = 'required|integer';
-                $Rules['shipping'] = 'required|integer';
+                $Rules['vat_type'] = ['required_with:vat_percentage', Rule::in(['percentage', 'fixed'])];
+                $Rules['vat_percentage'] = 'required_with:vat_type';
         }
         return Validator::make($r, $Rules);
+    }
+    private function calculateVatPercentage($r, $ProductData){
+        // Calculate the vat_percentage field
+        if($r->has('vat_type') && $r->has('vat_percentage')){
+            $ProductData['is_vat_included'] = true;
+            if($r->vat_type == 'fixed'){
+                // Calculate the VAT percentage
+                $ProductData['vat_percentage'] = round($r->vat_percentage / $r->price * 100);
+            }
+        }else{
+            // Default to the store vat_percentage, this means the client didn't send a vat_percentage so the VAT is included in the price
+            // which means the VAT value for this product is what the store default is ...
+            $ProductData['vat_percentage'] = auth()->user()->Store->vat_percentage;
+            $ProductData['is_vat_included'] = false;
+        }
+        return $ProductData;
     }
 
     public function getAll(){
@@ -44,12 +65,11 @@ class ProductController extends Controller {
             return $this->api_response($Validator->errors(), false, 422);
         }
         // Validation clear, add the product
-        $ProductData = $r->all();
+        $ProductData = $r->except('vat_type');
         $ProductData['user_id'] = auth()->user()->id;
         $ProductData['store_id'] = auth()->user()->Store->id;
-        $ProductData['is_vat_included'] = ($r->has('vat_percentage')) ? 1 : 0;
-        $ProductData['vat_percentage'] = ($r->has('vat_percentage')) ? $r->vat_percentage : auth()->user()->Store->vat_percentage;
-        $ProductData['shipping'] = ($r->has('shipping')) ? $r->shipping : auth()->user()->Store->shipping;
+        $ProductData = $this->calculateVatPercentage($r, $ProductData);
+
         $Product = Product::create($ProductData);
         return $this->api_response($Product, true, 201);
     }
@@ -65,7 +85,9 @@ class ProductController extends Controller {
             return $this->api_response($Validator->errors(), false, 422);
         }
         // All seems to be clear, do the update
-        $Product->update($r->all());
+        $ProductData = $r->all();
+        $ProductData = $this->calculateVatPercentage($r, $ProductData);
+        $Product->update($ProductData);
         return $this->api_response($Product, true, 200);
     }
 

@@ -14,7 +14,7 @@ class StoreController extends Controller{
         }
         // There is no validation in this method, as the store title is not required
         $Rules = [
-            'vat' => 'required|integer',
+            'vat_percentage' => 'required|integer',
             'shipping' => 'required|integer'
         ];
         $Validator = Validator::make($r->all(), $Rules);
