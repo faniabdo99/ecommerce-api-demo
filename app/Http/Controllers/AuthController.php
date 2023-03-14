@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 
 // Models
 use App\User;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller{
     /**
@@ -32,11 +33,17 @@ class AuthController extends Controller{
             // Save the user to teh database
             $UserData = $r->all();
             $UserData['password'] = Hash::make($r->password);
+            $UserData['api_token'] = Str::random(60);
             $User = User::create($UserData);
             return $this->api_response(['user' => $User], true, 200);
         }
     }
 
+    /**
+     * @param Request $r
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @description Log a user in by comparing the incoming data with our database and return an authentication token
+     */
     public function postLogin(Request $r){
         // Validate the request
         $Rules = [
@@ -51,7 +58,7 @@ class AuthController extends Controller{
             if(Auth::attempt($r->all())){
                 // The user is allowed to login
                 $AuthenticatedUser = User::where('email', $r->email)->first();
-                return $this->api_response(['user' => $AuthenticatedUser, 'token' => $AuthenticatedUser->token], true, 200);
+                return $this->api_response(['user' => $AuthenticatedUser, 'token' => $AuthenticatedUser->api_token], true, 200);
             }else{
                 return $this->api_response('The email or password you entered are incorrect!', false, 401);
             }

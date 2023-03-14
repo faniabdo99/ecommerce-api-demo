@@ -18,8 +18,17 @@ Route::group([
     'as' => 'api.',
     'prefix' =>'v1'
 ], function(){
+    // Authentication System
     Route::prefix('auth')->group(function(){
         Route::post('signup', 'AuthController@postSignup')->name('auth.signup');
         Route::post('login', 'AuthController@postLogin')->name('auth.login');
     });
+
+    Route::group([
+        'prefix' => 'store',
+        'middleware' => 'auth:api'
+    ], function (){
+       Route::post('create', 'StoreController@postNew')->name('store.postNew');
+    });
+
 });

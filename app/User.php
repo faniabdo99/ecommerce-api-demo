@@ -44,4 +44,10 @@ class User extends Authenticatable
         return base64_encode("['email' => $this->email, 'id' => $this->id]");
     }
 
+    public function Store(){
+        return $this->hasOne(Store::class);
+    }
+    public function hasStore(){
+        return $this->Store;
+    }
 }
