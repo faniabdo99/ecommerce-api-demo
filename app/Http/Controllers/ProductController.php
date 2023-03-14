@@ -73,7 +73,9 @@ class ProductController extends Controller {
      * @usages GET /api/v1/product
      */
     public function getAll(){
-        return $this->api_response(Product::mine()->get(), true, 200);
+        // Here, we can utilize a quick header check to know if we want to return the localized values or not
+        // something like if ($r->header('X-LANGUAGE') == 'AR') { $Product->load('Locale'); } but I didn't do that for the sack of simplicity.
+        return $this->api_response(Product::mine()->with('Locale')->get(), true, 200);
     }
 
     /**
@@ -87,6 +89,9 @@ class ProductController extends Controller {
         if(auth()->user()->id != $Product->user_id){
             return $this->api_response('You are not allowed to view this product', false, 403);
         }
+        // Here, we can utilize a quick header check to know if we want to return the localized values or not
+        // something like if ($r->header('X-LANGUAGE') == 'AR') { $Product->load('Locale'); } but I didn't do that for the sack of simplicity.
+        $Product->load('Locale');
         return $this->api_response($Product, true, 200);
     }
 

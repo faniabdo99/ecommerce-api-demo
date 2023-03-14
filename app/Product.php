@@ -15,11 +15,14 @@ class Product extends Model{
     /**
      *========================= RELATIONS =========================
      */
-    public function User(){
+    public function User(): \Illuminate\Database\Eloquent\Relations\BelongsTo {
         return $this->belongsTo(User::class, 'user_id');
     }
-    public function Store(){
+    public function Store(): \Illuminate\Database\Eloquent\Relations\BelongsTo {
         return $this->belongsTo(Store::class, 'store_id');
+    }
+    public function Locale(): \Illuminate\Database\Eloquent\Relations\HasOne {
+        return $this->hasOne(ProductLocale::class);
     }
 
     /**
