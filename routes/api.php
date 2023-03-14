@@ -24,11 +24,18 @@ Route::group([
         Route::post('login', 'AuthController@postLogin')->name('auth.login');
     });
 
-    Route::group([
-        'prefix' => 'store',
-        'middleware' => 'auth:api'
-    ], function (){
-       Route::post('create', 'StoreController@postNew')->name('store.postNew');
+    Route::middleware('auth:api')->group(function (){
+        // api/v1/store/{route}
+       Route::prefix('store')->group(function(){
+            Route::post('create', 'StoreController@postNew')->name('store.postNew');
+       });
+        // api/v1/product/{route}
+       Route::prefix('product')->group(function(){
+           Route::get('/', 'ProductController@getAll')->name('product.getAll');
+           Route::get('/{product}', 'ProductController@getSingle')->name('product.getSingle');
+           Route::post('/', 'ProductController@postNew')->name('product.postNew');
+           Route::post('/{product}', 'ProductController@postEdit')->name('product.postEdit');
+           Route::delete('/{product}', 'ProductController@delete')->name('product.delete');
+       });
     });
-
 });
