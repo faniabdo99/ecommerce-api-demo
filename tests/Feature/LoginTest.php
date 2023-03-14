@@ -50,9 +50,12 @@ class LoginTest extends TestCase{
                 'email' => $User->email,
                 'updated_at' => $User->updated_at,
                 'created_at' => $User->created_at,
-                'id' => $User->id
+                'api_token' => $User->api_token,
+                'id' => $User->id,
+                'email_verified_at' => $User->email_verified_at,
+                'type' => $User->type
             ],
-            'token' => $User->token
+            'token' => $User->api_token
         ];
         $this->assertAuthenticated();
         $response->assertStatus(200);

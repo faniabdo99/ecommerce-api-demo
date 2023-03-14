@@ -2,8 +2,9 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Store;
+use App\Product;
 use App\User;
+use App\Store;
 use Faker\Generator as Faker;
 use Illuminate\Support\Str;
 
@@ -18,11 +19,15 @@ use Illuminate\Support\Str;
 |
 */
 
-$factory->define(Store::class, function (Faker $faker) {
+$factory->define(Product::class, function (Faker $faker) {
+
     return [
-        'title' => $faker->name."'s Store",
-        'vat_percentage' => 14,
-        'shipping' => 10,
+        'title' => $faker->title,
+        'description' => $faker->sentence,
+        'price' => 150,
+        'vat_percentage' => 14 ,
+        'is_vat_included' => 1 ,
         'user_id' => factory(User::class)->create()->id,
+        'store_id' => factory(Store::class)->create()->id
     ];
 });

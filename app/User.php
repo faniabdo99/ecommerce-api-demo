@@ -34,19 +34,17 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
     /**
-     * @return string
-     * @description Generate a random but static token to use in authentication, which can be decoded later to get the user object
+     *========================= RELATIONS =========================
      */
-    public function getTokenAttribute(): string
-    {
-        return base64_encode("['email' => $this->email, 'id' => $this->id]");
-    }
 
     public function Store(){
         return $this->hasOne(Store::class);
     }
+
+    /**
+     *========================= CUSTOM METHODS =========================
+     */
     public function hasStore(){
         return $this->Store;
     }
