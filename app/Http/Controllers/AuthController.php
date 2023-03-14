@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 // Models
 use App\User;
@@ -23,7 +24,8 @@ class AuthController extends Controller{
         $Rules = [
             'name' => 'required|min:5|max:255',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:5'
+            'password' => 'required|min:5',
+            'type' => Rule::in(['merchant', 'user'])
         ];
         $Validator = Validator::make($r->all(), $Rules);
         if($Validator->fails()){

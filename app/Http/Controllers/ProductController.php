@@ -41,7 +41,7 @@ class ProductController extends Controller {
                 $Rules['vat_type'] = ['required_with:vat_percentage', Rule::in(['percentage', 'fixed'])];
                 $Rules['vat_percentage'] = 'required_with:vat_type';
         }
-        return Validator::make($r, $Rules);
+        return Validator::make($r->all(), $Rules);
     }
 
     /**
@@ -103,7 +103,7 @@ class ProductController extends Controller {
      */
     public function postNew(Request $r){
         // Validate the request
-        $Validator = $this->validateRequest($r->all(), 'create');
+        $Validator = $this->validateRequest($r, 'create');
         if($Validator->fails()){
             return $this->api_response($Validator->errors(), false, 422);
         }
@@ -130,7 +130,7 @@ class ProductController extends Controller {
             return $this->api_response('You are not allowed to edit this product', false, 403);
         }
         // Validate the request
-        $Validator = $this->validateRequest($r->all(), 'update');
+        $Validator = $this->validateRequest($r, 'update');
         if($Validator->fails()){
             return $this->api_response($Validator->errors(), false, 422);
         }
@@ -165,7 +165,7 @@ class ProductController extends Controller {
      */
 
     public function postLocalize(Request $r, Product $Product){
-        $Validator = $this->validateRequest($r->all(), 'localize');
+        $Validator = $this->validateRequest($r, 'localize');
         if($Validator->fails()){
             return $this->api_response($Validator->errors(), false, 422);
         }

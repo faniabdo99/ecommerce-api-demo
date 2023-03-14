@@ -26,18 +26,22 @@ Route::group([
 
     Route::middleware('auth:api')->group(function (){
         // api/v1/store/{route}
-       Route::prefix('store')->group(function(){
-            Route::post('create', 'StoreController@postNew')->name('store.postNew');
-       });
-        // api/v1/product/{route}
-       Route::prefix('product')->group(function(){
-           Route::get('/', 'ProductController@getAll')->name('product.getAll');
-           Route::get('/{product}', 'ProductController@getSingle')->name('product.getSingle');
-           Route::post('/', 'ProductController@postNew')->name('product.postNew');
-           Route::post('/{product}', 'ProductController@postEdit')->name('product.postEdit');
-           Route::delete('/{product}', 'ProductController@delete')->name('product.delete');
-           Route::post('/localize/{product}', 'ProductController@postLocalize')->name('product.localize');
-       });
+        Route::middleware('merchant')->group(function (){
+
+           Route::prefix('store')->group(function(){
+                Route::post('create', 'StoreController@postNew')->name('store.postNew');
+           });
+            // api/v1/product/{route}
+           Route::prefix('product')->group(function(){
+               Route::get('/', 'ProductController@getAll')->name('product.getAll');
+               Route::get('/{product}', 'ProductController@getSingle')->name('product.getSingle');
+               Route::post('/', 'ProductController@postNew')->name('product.postNew');
+               Route::post('/{product}', 'ProductController@postEdit')->name('product.postEdit');
+               Route::delete('/{product}', 'ProductController@delete')->name('product.delete');
+               Route::post('/localize/{product}', 'ProductController@postLocalize')->name('product.localize');
+           });
+
+        });
 
         // api/v1/cart/{route}
         Route::prefix('cart')->group(function(){
