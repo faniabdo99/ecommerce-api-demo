@@ -1,9 +1,9 @@
 <?php
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\User;
 
 class LoginTest extends TestCase{
     use RefreshDatabase;
@@ -39,7 +39,7 @@ class LoginTest extends TestCase{
     }
 
     public function testLoginWithValidInput(){
-        $User = factory(User::class)->create();
+        $User = User::factory()->create();
         $response = $this->post('/api/v1/auth/login', [
             'email' => $User->email,
             'password' => 'password'

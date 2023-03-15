@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\User;
-use App\Store;
+use App\Models\Store;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -16,7 +16,7 @@ class StoreTest extends TestCase
      * @return void
      */
     public function testCreateStoreWithValidInput() {
-        $User = factory(User::class)->create([
+        $User = User::factory()->create([
             'type' => 'merchant'
         ]);
         $response = $this->post('/api/v1/store/create', [
@@ -36,7 +36,7 @@ class StoreTest extends TestCase
         ]);
     }
     public function testCreateStoreWithStoreAlreadyCreated() {
-        $Store = factory(Store::class)->create();
+        $Store = Store::factory()->create();
         $User = $Store->User;
         $response = $this->post('/api/v1/store/create', [],[
             'Authorization' => 'Bearer '.$User->api_token

@@ -1,7 +1,11 @@
 <?php
 
 use Illuminate\Http\Request;
-
+// Controllers
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\StoreController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CartController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,8 +24,8 @@ Route::group([
 ], function(){
     // Authentication System
     Route::prefix('auth')->group(function(){
-        Route::post('signup', 'AuthController@postSignup')->name('auth.signup');
-        Route::post('login', 'AuthController@postLogin')->name('auth.login');
+        Route::post('signup', [AuthController::class, 'postSignup'])->name('auth.signup');
+        Route::post('login', [AuthController::class, 'postLogin'])->name('auth.login');
     });
 
     Route::middleware('auth:api')->group(function (){
@@ -29,25 +33,25 @@ Route::group([
         Route::middleware('merchant')->group(function (){
 
            Route::prefix('store')->group(function(){
-                Route::post('create', 'StoreController@postNew')->name('store.postNew');
+                Route::post('create', [StoreController::class, 'postNew'])->name('store.postNew');
            });
             // api/v1/product/{route}
            Route::prefix('product')->group(function(){
-               Route::get('/', 'ProductController@getAll')->name('product.getAll');
-               Route::get('/{product}', 'ProductController@getSingle')->name('product.getSingle');
-               Route::post('/', 'ProductController@postNew')->name('product.postNew');
-               Route::put('/{product}', 'ProductController@postEdit')->name('product.postEdit');
-               Route::delete('/{product}', 'ProductController@delete')->name('product.delete');
-               Route::post('/localize/{product}', 'ProductController@postLocalize')->name('product.localize');
+               Route::get('/', [ProductController::class, 'getAll'])->name('product.getAll');
+               Route::get('/{product}', [ProductController::class, 'getSingle'])->name('product.getSingle');
+               Route::post('/', [ProductController::class, 'postNew'])->name('product.postNew');
+               Route::put('/{product}', [ProductController::class, 'postEdit'])->name('product.postEdit');
+               Route::delete('/{product}', [ProductController::class, 'delete'])->name('product.delete');
+               Route::post('/localize/{product}', [ProductController::class, 'postLocalize'])->name('product.localize');
            });
 
         });
 
         // api/v1/cart/{route}
         Route::prefix('cart')->group(function(){
-            Route::get('/', 'CartController@getAll')->name('cart.getAll');
-            Route::post('add', 'CartController@postNew')->name('cart.postNew');
-            Route::post('delete/{cart_item}', 'CartController@delete')->name('cart.delete');
+            Route::get('/', [CartController::class, 'getAll'])->name('cart.getAll');
+            Route::post('add', [CartController::class, 'postNew'])->name('cart.postNew');
+            Route::post('delete/{cart_item}', [CartController::class, 'delete'])->name('cart.delete');
         });
     });
 });

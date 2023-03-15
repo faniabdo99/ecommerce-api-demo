@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\User;
-use App\Product;
-use App\Store;
+use App\Models\Product;
+use App\Models\Store;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -16,12 +16,13 @@ class ProductTest extends TestCase {
      * @return void
      */
     public function testUserCanGetAllProducts() {
-        $User = factory(User::class)->create([
+        $User = User::factory()->create([
             'type' => 'merchant'
         ]);
-        $Products = factory(Product::class, 10)->create([
+
+        $Products = Product::factory()->count(10)->create([
             'user_id' => $User->id,
-            'store_id' => factory(Store::class)->create(['user_id' => $User->id])
+            'store_id' => Store::factory()->create(['user_id' => $User->id])
         ]);
         $this->actingAs($User);
         $response = $this->get('/api/v1/product', [
@@ -35,12 +36,12 @@ class ProductTest extends TestCase {
         ]);
     }
     public function testUserCanGetSingleProduct(){
-        $User = factory(User::class)->create([
+        $User = User::factory()->create([
             'type' => 'merchant'
         ]);
-        $Products = factory(Product::class, 10)->create([
+        $Products = Product::factory()->count(10)->create([
             'user_id' => $User->id,
-            'store_id' => factory(Store::class)->create(['user_id' => $User->id])
+            'store_id' => Store::factory()->create(['user_id' => $User->id])
         ]);
         $this->actingAs($User);
         $response = $this->get('/api/v1/product/'.$Products->first()->id, [

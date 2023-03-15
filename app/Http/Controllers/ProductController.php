@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\ProductLocale;
 use Illuminate\Http\Request;
-
-use App\Product;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+// Models
+use App\Models\Product;
+use App\Models\ProductLocale;
 
 class ProductController extends Controller {
     /**

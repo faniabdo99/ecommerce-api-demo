@@ -1,10 +1,10 @@
 <?php
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
-use App\User;
 
 class SignupTest extends TestCase{
     use RefreshDatabase;

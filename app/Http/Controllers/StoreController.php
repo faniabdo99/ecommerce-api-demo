@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+// Models
+use App\Models\Store;
+
 class StoreController extends Controller{
 
     /**

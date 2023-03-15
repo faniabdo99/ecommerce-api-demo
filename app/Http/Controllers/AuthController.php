@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 // Models
-use App\User;
+use App\Models\User;
 
 class AuthController extends Controller{
     /**
