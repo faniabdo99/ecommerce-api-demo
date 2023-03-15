@@ -36,6 +36,10 @@ Note: I've created few test cases to demonstrate my ability in the automated tes
 ```bash
 vendor/bin/phpunit
 ```
+If you are viewing the commits later to laravel version 7, you can use the below command for better testing interface
+```bash
+php artisan test
+```
 ## Usage
 The application consists of many REST API endpoints, below you can find each of them documented with the required parameters and the endpoint description
 
