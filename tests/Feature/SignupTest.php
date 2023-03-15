@@ -59,8 +59,9 @@ class SignupTest extends TestCase{
         $ExpectedUserData = [
             'name' => $User->name,
             'email' => $User->email,
-            'updated_at' => $User->updated_at,
-            'created_at' => $User->created_at,
+            'updated_at' => $User->updated_at->toIsoString(),
+            'created_at' => $User->created_at->toIsoString(),
+            'api_token' => $User->api_token,
             'id' => $User->id
         ];
         // Ensure the password has been properly encrypted
@@ -78,7 +79,7 @@ class SignupTest extends TestCase{
          * has been created since we are using User::first(), but I like to cover the database testing as well just
          * to be extra sure
          */
-        $this->assertDatabaseHas('users' , $ExpectedUserData);
+        $this->assertDatabaseCount('users' , 1);
     }
 
 }

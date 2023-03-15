@@ -48,11 +48,11 @@ class LoginTest extends TestCase{
             'user' => [
                 'name' => $User->name,
                 'email' => $User->email,
-                'updated_at' => $User->updated_at,
-                'created_at' => $User->created_at,
+                'updated_at' => $User->updated_at->toIsoString(),
+                'created_at' => $User->created_at->toIsoString(),
                 'api_token' => $User->api_token,
                 'id' => $User->id,
-                'email_verified_at' => $User->email_verified_at,
+                'email_verified_at' => $User->email_verified_at->toIsoString(),
                 'type' => $User->type
             ],
             'token' => $User->api_token
