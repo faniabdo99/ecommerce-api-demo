@@ -79,25 +79,23 @@ class CartController extends Controller {
      * @description Delete a cart item
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response|void
      */
-    public function delete(Request $r){
-        // TODO: Handle qty while deleting the product
-        // Ensure there is a cart_item_id in the request
-        if(!$r->has('cart_item_id')){
-            return $this->api_response('You have to provide a cart item id', false, 422);
-        }
-        $CartItem = CartItem::find($r->cart_item_id);
-        // Ensure the cart item exists
-        if(!$CartItem){
-            return $this->api_response('There is no such cart item', false, 404);
-        }
+    public function delete(Request $r, CartItem $CartItem){
         // Ensure the cart_item_id actually belongs to the user
         if($CartItem->user_id != auth()->user()->id){
             return $this->api_response('Your are not allowed to delete this record!', false, 403);
         }
-        // We don't delete the record, the deleted carts can be a valuable information for the marketing team to detect patterns & identify any issues (Abandoned Carts)
-        $CartItem->update([
-            'status' => 'deleted'
-        ]);
+        // Ensure the qty field has a value
+        $r->qty = ( !$r->has('qty') ) ? 1 : $r->qty;
+        if($CartItem->qty <= $r->qty){
+            // We don't delete the record, the deleted carts can be a valuable information for the marketing team to detect patterns & identify any issues (Abandoned Carts)
+            $CartItem->update([
+                'status' => 'deleted'
+            ]);
+            return $this->api_response('Cart item has been deleted', true, 200);
+        }else{
+            $CartItem->decrement('qty', intval($r->qty));
+            return $this->api_response(['message' => 'Cart Item has been updated', $CartItem], true, 200);
+        }
     }
 
 }

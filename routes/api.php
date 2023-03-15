@@ -47,7 +47,7 @@ Route::group([
         Route::prefix('cart')->group(function(){
             Route::get('/', 'CartController@getAll')->name('cart.getAll');
             Route::post('add', 'CartController@postNew')->name('cart.postNew');
-            Route::post('delete', 'CartController@delete')->name('cart.delete');
+            Route::post('delete/{cart_item}', 'CartController@delete')->name('cart.delete');
         });
     });
 });

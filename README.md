@@ -151,6 +151,16 @@ POST /api/v1/cart/add
 ```
 <br />
 
+#### Delete from Cart
+- **Visibility:** Authenticated
+- **Description:** Delete item from cart
+- **Params:** `(integer) qty`
+- **Response:** Either a message or the newly updated cart item
+```apacheconf
+POST /api/v1/cart/delete/{id}
+```
+<br />
+
 
 #### All Cart Items
 - **Visibility:** Authenticated

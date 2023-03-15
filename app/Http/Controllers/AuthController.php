@@ -37,7 +37,12 @@ class AuthController extends Controller{
             $UserData['password'] = Hash::make($r->password);
             $UserData['api_token'] = Str::random(60);
             $User = User::create($UserData);
-            return $this->api_response(['user' => $User], true, 200);
+            if($User){
+                return $this->api_response(['user' => $User], true, 200);
+            }else{
+                // We can also throw an exception here, but I feel like this way is better for this project scale ,and it's more consistent for the frontend
+                return $this->api_response('Something went wrong!', false, 500);
+            }
         }
     }
 
@@ -60,8 +65,7 @@ class AuthController extends Controller{
             // Attempt to log the user in
             if(Auth::attempt($r->all())){
                 // The user is allowed to login
-                $AuthenticatedUser = User::where('email', $r->email)->first();
-                return $this->api_response(['user' => $AuthenticatedUser, 'token' => $AuthenticatedUser->api_token], true, 200);
+                return $this->api_response(['user' => auth()->user(), 'token' => auth()->user()->api_token], true, 200);
             }else{
                 return $this->api_response('The email or password you entered are incorrect!', false, 401);
             }
