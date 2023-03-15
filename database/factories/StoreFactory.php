@@ -23,6 +23,6 @@ $factory->define(Store::class, function (Faker $faker) {
         'title' => $faker->name."'s Store",
         'vat_percentage' => 14,
         'shipping' => 10,
-        'user_id' => factory(User::class)->create()->id,
+        'user_id' => factory(User::class)->create(['type' => 'merchant'])->id,
     ];
 });

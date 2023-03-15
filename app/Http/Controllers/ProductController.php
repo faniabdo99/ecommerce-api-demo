@@ -107,7 +107,10 @@ class ProductController extends Controller {
         if($Validator->fails()){
             return $this->api_response($Validator->errors(), false, 422);
         }
-        // Validation clear, add the product
+        // Ensure the user has already created a store
+        if(!auth()->user()->hasStore()){
+            return $this->api_response('You need to create a store first!', false, 422);
+        }
         $ProductData = $r->except('vat_type');
         $ProductData['user_id'] = auth()->user()->id;
         $ProductData['store_id'] = auth()->user()->Store->id;

@@ -1,78 +1,163 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+## Ecommerce Demo API
+Ecommerce Demo API is a dummy project consists of a REST API to serve a fictional ecommerce platform with simple multi-vendor functionality
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+## System Requirements
+- PHP >= 7.2.5
+- Mysql
+- Apache / Nginx Server
 
-## About Laravel
+## Installation
+### Clone the GitHub Repository
+```bash
+git clone git@github.com:faniabdo99/ecommerce-api-demo.git
+```
+### Install the Dependencies
+```bash 
+composer install
+```
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Set the Environment File
+- Rename .env.example to .env
+- Update the file content to fit your environment setup
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Create and Connect a Database
+- Create a database in your local Mysql engine
+- Update .env file with the database credentials
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Run the Development Server
+```bash
+php artisan serve
+```
+## Testing
+To run the automated tests, enter the command below
+<br />
 
-## Learning Laravel
+Note: I've created few test cases to demonstrate my ability in the automated tests and applied it to a part of the project
+```bash
+vendor/bin/phpunit
+```
+## Usage
+The application consists of many REST API endpoints, below you can find each of them documented with the required parameters and the endpoint description
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+**How to read this documentation:**
+- Params marked with * are required
+- Items in array format `['Something' ,'Something 2']` are the only available options for the param 
+- All endpoints response are in `JSON` format
+- Visibility `Authenticated` means the request must come from a logged-in user regardless of his type
+- Visibility `isMerchant` means the request must come from a logged-in user and his type must be `merchant`
+### Authentication System
+#### Signup
+- **Visibility:** Public
+- **Description:** Create a new user in the system
+- **Params:** `(string) name*` `(string) email*` `(string) password*` `(string) type ['user','merchant']`
+- **Response:** The newly created user
+```apacheconf
+POST /api/v1/auth/signup 
+```
+<br />
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+#### Login
+- **Visibility:** Public
+- **Description:** Login to the system and retrieve the user `api_token`
+- **Params:** `(string) email*` `(string) password*`
+- **Response:** The logged-in user & his `ap_token` string
+```apacheconf
+POST /api/v1/auth/login 
+```
+<br />
 
-## Laravel Sponsors
+### Store System
+#### Create Store
+- **Visibility:** isMerchant
+- **Description:** Create a new store for the user
+- **Params:** `(string) title` `(integer) vat_percentage*` `(integer) shipping*`
+- **Response:** The newly created store
+```apacheconf
+POST /api/v1/store/create
+```
+<br />
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### Products System
+#### Create Product
+- **Visibility:** isMerchant
+- **Description:** Create a new product
+- **Params:** `(string) title*` `(string) description*` `(integer) price*` `(string) vat_type ['fixed' ,'percentage']` `(integer) vat_percentage`
+- **Response:** The newly created product
+```apacheconf
+POST /api/v1/product/
+```
+<br />
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
-- [Appoly](https://www.appoly.co.uk)
-- [OP.GG](https://op.gg)
+#### Update Product
+- **Visibility:** isMerchant
+- **Description:** Update a product
+- **Params:** `(string) title` `(string) description` `(integer) price` `(string) vat_type ['fixed' ,'percentage']` `(integer) vat_percentage`
+- **Response:** The newly updated product
+```apacheconf
+PUT /api/v1/product/{id}
+```
+<br />
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+#### Delete Product
+- **Visibility:** isMerchant
+- **Description:** Delete a product
+- **Params:** None
+- **Response:** a Success message
+```apacheconf
+DELETE /api/v1/product/{id}
+```
+<br />
 
-## Code of Conduct
+#### Get Product
+- **Visibility:** isMerchant
+- **Description:** Get a single product
+- **Params:** None
+- **Response:** The requested product
+```apacheconf
+GET /api/v1/product/{id}
+```
+<br />
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### Get All Products
+- **Visibility:** isMerchant
+- **Description:** Get a single product
+- **Params:** None
+- **Response:** List of all the user's products
+```apacheconf
+GET /api/v1/product
+```
+<br />
 
-## Security Vulnerabilities
+#### Localize
+- **Visibility:** isMerchant
+- **Description:** Update the translation of a product
+- **Params:** `(string) title*` `(string) description*`
+- **Response:** a Success message
+```apacheconf
+POST /api/v1/product/localize/{id}
+```
+<br />
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-## License
+### Cart System
+#### Add to Cart
+- **Visibility:** Authenticated
+- **Description:** Add new item to your cart
+- **Params:** `(integer) product_id*` `(integer) qty`
+- **Response:** The newly created cart item
+```apacheconf
+POST /api/v1/cart/add
+```
+<br />
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+#### All Cart Items
+- **Visibility:** Authenticated
+- **Description:** Lists the cart items with prices breakdown
+- **Params:** None
+- **Response:** a List of the items in the user's cart with price breakdown
+```apacheconf
+GET /api/v1/cart/
+```
+<br />

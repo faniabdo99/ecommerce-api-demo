@@ -16,8 +16,13 @@ class StoreTest extends TestCase
      * @return void
      */
     public function testCreateStoreWithValidInput() {
-        $User = factory(User::class)->create();
-        $response = $this->post('/api/v1/store/create', [],[
+        $User = factory(User::class)->create([
+            'type' => 'merchant'
+        ]);
+        $response = $this->post('/api/v1/store/create', [
+            'vat_percentage' => 14,
+            'shipping' => 10
+        ],[
             'Authorization' => 'Bearer '.$User->api_token
         ]);
         // Ensure the status is as expected "200 (Success)"
@@ -30,7 +35,6 @@ class StoreTest extends TestCase
             'response' => $Store->toArray()
         ]);
     }
-
     public function testCreateStoreWithStoreAlreadyCreated() {
         $Store = factory(Store::class)->create();
         $User = $Store->User;

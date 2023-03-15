@@ -36,7 +36,7 @@ Route::group([
                Route::get('/', 'ProductController@getAll')->name('product.getAll');
                Route::get('/{product}', 'ProductController@getSingle')->name('product.getSingle');
                Route::post('/', 'ProductController@postNew')->name('product.postNew');
-               Route::post('/{product}', 'ProductController@postEdit')->name('product.postEdit');
+               Route::put('/{product}', 'ProductController@postEdit')->name('product.postEdit');
                Route::delete('/{product}', 'ProductController@delete')->name('product.delete');
                Route::post('/localize/{product}', 'ProductController@postLocalize')->name('product.localize');
            });
